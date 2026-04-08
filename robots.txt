@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://notomantra-planners.notomantra.workers.dev/sitemap.xml
