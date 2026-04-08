@@ -87,12 +87,12 @@ details p{margin-top:8px;color:var(--muted);font-size:0.9rem}
 </style>
 </head>
 <body>
-<div class="dl-loading" id="dlLoading"><div class="spinner"></div><p>Preparing your download...</p></div>
+
 <header class="hero">
   <div class="hero-badge">Free Download · No Signup</div>
   <h1>Printable Planners for Marketers</h1>
   <p>Plan campaigns, schedule content, and track social performance. Three printables for marketers who execute.</p>
-  <div class="hero-stats"><div class="hero-stat"><strong>3</strong><span>Planners</span></div><div class="hero-stat"><strong>A4</strong><span>Print-Ready</span></div><div class="hero-stat"><strong>JPG</strong><span>High Quality</span></div></div>
+  <div class="hero-stats"><div class="hero-stat"><strong>3</strong><span>Planners</span></div><div class="hero-stat"><strong>A4</strong><span>Print-Ready</span></div><div class="hero-stat"><strong>PDF</strong><span>Print-Ready</span></div></div>
 </header>
 
 <section class="section">
@@ -114,7 +114,7 @@ details p{margin-top:8px;color:var(--muted);font-size:0.9rem}
       <div class="format-btns">
         <button class="download-btn" onclick="downloadPlanner('p1','Marketing-Campaign-Planner')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download JPG
+          Download PDF
         </button>
       </div>
     </div>
@@ -139,7 +139,7 @@ details p{margin-top:8px;color:var(--muted);font-size:0.9rem}
       <div class="format-btns">
         <button class="download-btn" onclick="downloadPlanner('p2','Marketing-Content-Calendar')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download JPG
+          Download PDF
         </button>
       </div>
     </div>
@@ -164,7 +164,7 @@ details p{margin-top:8px;color:var(--muted);font-size:0.9rem}
       <div class="format-btns">
         <button class="download-btn" onclick="downloadPlanner('p3','Marketing-Social-Media-Tracker')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download JPG
+          Download PDF
         </button>
       </div>
     </div>
@@ -193,31 +193,20 @@ details p{margin-top:8px;color:var(--muted);font-size:0.9rem}
   <p>© 2026 <a href="https://notomantra.gumroad.com/l/marketing-os" target="_blank" rel="noopener">NotoMantra</a> · Notion templates that run your business</p>
 </footer>
 <script>
-async function loadH2C(){
-  if(window.html2canvas)return window.html2canvas;
-  return new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload=()=>resolve(window.html2canvas);
-    s.onerror=()=>reject(new Error('Failed to load html2canvas'));
-    document.head.appendChild(s);
-  });
-}
-async function downloadPlanner(id,filename){
-  const o=document.getElementById('dlLoading');o.classList.add('active');
-  try{
-    const h2c=await loadH2C();
-    const el=document.getElementById(id);
-    const orig={t:el.style.transform,m:el.style.marginBottom};
-    el.style.transform='none';el.style.marginBottom='0';
-    const canvas=await h2c(el,{scale:3,useCORS:true,backgroundColor:'#FFFFFF',logging:false,width:794,height:1123});
-    el.style.transform=orig.t;el.style.marginBottom=orig.m;
-    canvas.toBlob(function(blob){
-      const u=URL.createObjectURL(blob);const a=document.createElement('a');
-      a.href=u;a.download=filename+'-NotoMantra.jpg';document.body.appendChild(a);a.click();
-      document.body.removeChild(a);URL.revokeObjectURL(u);o.classList.remove('active');
-    },'image/jpeg',0.95);
-  }catch(e){console.error(e);o.classList.remove('active');alert('Download failed. Please try again.');}
+function downloadPlanner(id,filename){
+  const el=document.getElementById(id);
+  const w=window.open('','_blank','width=850,height=1200');
+  const styles=document.querySelectorAll('style');
+  let css='';styles.forEach(s=>css+=s.innerHTML);
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+filename+'</title>');
+  var fontLink=document.querySelector('link[href*="fonts.googleapis"]');w.document.write(fontLink?fontLink.outerHTML:'');
+  w.document.write('<style>'+css+'*{margin:0;padding:0}body{background:#fff;display:flex;justify-content:center;padding:0}.planner-sheet{transform:none!important;margin:0!important;border:none!important}@media print{@page{size:A4;margin:0}body{margin:0;padding:0}.planner-sheet{width:210mm;height:297mm;padding:8mm}}</style>');
+  w.document.write('</head><body>');
+  const clone=el.cloneNode(true);
+  clone.style.transform='none';clone.style.marginBottom='0';
+  w.document.body.appendChild(clone);
+  w.document.write('</body></html>');w.document.close();
+  setTimeout(()=>{w.focus();w.print();},600);
 }
 </script>
 </body>
